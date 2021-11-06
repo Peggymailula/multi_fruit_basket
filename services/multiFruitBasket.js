@@ -69,10 +69,10 @@ module.exports = (pool) =>  {
  
    //const bastket = await pool.query('SELECT multi_fruit_basket.name, fruit_basket_item.fruitType FROM fruit_basket_item INNER JOIN multi_fruit_basket ON multi_fruit_basket.id = fruit_basket_item.multi_fruit_basket_id AND fruit_basket_item.multi_fruit_basket_id = $1',[id]);
    let basket = await pool.query('SELECT name FROM multi_fruit_basket WHERE id = $1',[id]);
-    basket = basket.rows;
-    let basketName = basket.map(function (obj) {
-      return  obj.name;
-    });
+    //basket = basket.rows;
+
+    let basketName = basket.rows[0].name;
+    
    let allFruit =  await pool.query('SELECT fruitType,qty FROM fruit_basket_item  WHERE multi_fruit_basket_id  = $1',[id]);
      allFruit =  allFruit.rows;   
 
@@ -87,7 +87,7 @@ module.exports = (pool) =>  {
     if(qty.length !==0){
      baskets = {
         'id': id,
-        'basket_name':basketName[0],
+        'basket_name':basketName,
         'fruits_in_basket': fruit,
         'quantity':qty
       }
@@ -96,13 +96,45 @@ module.exports = (pool) =>  {
     else{
       baskets = {};
     }
-  
 
-    
-   //console.log(baskets);
   return baskets;
 
    }
+
+  //  async function getQuantity(){
+
+  //  }
+
+  //  async function getPrice(){
+
+  //  }
+
+   async function getTotalCost(name){
+
+    let nameId =  await pool.query('SELECT id FROM multi_fruit_basket WHERE name=$1',[name]);
+     nameId= nameId.rows[0].id;
+
+     let totalqty = await pool.query('SELECT SUM(qty) FROM fruit_basket_item WHERE multi_fruit_basket_id=$1',[nameId]);
+     totalqty= totalqty.rows[0].sum;
+
+     let totalPrice = await pool.query('SELECT SUM(price) FROM fruit_basket_item WHERE multi_fruit_basket_id=$1',[nameId]);
+     totalPrice= totalPrice.rows[0].sum;
+
+     return 'R'+( totalqty * totalPrice);
+  }
+
+  async function totalCost(id){
+
+    let totalqty = await pool.query('SELECT SUM(qty) FROM fruit_basket_item WHERE multi_fruit_basket_id=$1',[id]);
+     totalqty= totalqty.rows[0].sum;
+
+     let totalPrice = await pool.query('SELECT SUM(price) FROM fruit_basket_item WHERE multi_fruit_basket_id=$1',[id]);
+     totalPrice= totalPrice.rows[0].sum;
+
+     return 'R'+( totalqty * totalPrice);
+  
+
+  }
 
    
     return {
@@ -111,7 +143,8 @@ module.exports = (pool) =>  {
         addFruit,
         getFruit,
        getBasket,
-        // totalPrice
+        getTotalCost,
+        totalCost
        
     }
 }

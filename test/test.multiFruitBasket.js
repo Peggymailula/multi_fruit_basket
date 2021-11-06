@@ -161,6 +161,57 @@ it('should remove all the citrus fruit from the baskets and remove the basket it
    {} ,await fruitB.getBasket(1));
 });
     
+it('should return the total cost (R132) of the citrus basket using basket name', async function () {
+        
+
+  const fruitB = TheFruitBasket(pool);
+   await fruitB.newBasket('orange',4,4.00);
+   await fruitB.newBasket('grapefruit',5,4.50);
+   await fruitB.newBasket('lemon',2,3.50);
+
+  assert.equal('R132',await fruitB.getTotalCost('citrus'));
+
+});
+
+it('should return the total cost of stone fruit basket in Rands(149.5) using basket name', async function () {
+        
+
+  const fruitB = TheFruitBasket(pool);
+   await fruitB.newBasket('plum',3,4.00);
+   await fruitB.newBasket('apricot',4,4,3.60);
+   await fruitB.newBasket('banana',2,4.50);
+   await fruitB.newBasket('peach',6,3.50);
+   await fruitB.newBasket('orange',2,4.00);
+   await fruitB.newBasket('grapefruit',2,4.50);
+
+   assert.deepEqual('R149.5' ,await fruitB.getTotalCost('stone_fruit'));
+});
+
+it('should return the total cost (R132) of the citrus basket using basket id', async function () {
+        
+
+  const fruitB = TheFruitBasket(pool);
+   await fruitB.newBasket('orange',4,4.00);
+   await fruitB.newBasket('grapefruit',5,4.50);
+   await fruitB.newBasket('lemon',2,3.50);
+
+  assert.equal('R132',await fruitB.totalCost(1));
+
+});
+
+it('should return the total cost of stone fruit basket in Rands(149.5) using basket id', async function () {
+        
+
+  const fruitB = TheFruitBasket(pool);
+   await fruitB.newBasket('plum',3,4.00);
+   await fruitB.newBasket('apricot',4,4,3.60);
+   await fruitB.newBasket('banana',2,4.50);
+   await fruitB.newBasket('peach',6,3.50);
+   await fruitB.newBasket('orange',2,4.00);
+   await fruitB.newBasket('grapefruit',2,4.50);
+
+   assert.deepEqual('R149.5' ,await fruitB.totalCost(2));
+});
 
 
 
