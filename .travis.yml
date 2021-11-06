@@ -1,0 +1,17 @@
+language: node_js
+
+env:
+  - DATABASE_URL=postgresql://postgres@localhost:5432/multifruitbasket_test
+
+node_js:  
+  - "12.22.5"
+
+  
+
+before_script:
+  - npm install
+  - psql -c 'create database  multifruitbasket_test;' -U postgres
+  - psql -U postgres -d multifruitbasket_test -a -f tables.sql
+
+services:
+  - postgresql
